@@ -1,0 +1,28 @@
+{
+  "name": "wechat",
+  "version": "1.0.0",
+  "description": "wechat of node",
+  "main": "app.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/qiansimin88/wechat.git"
+  },
+  "keywords": [
+    "koa",
+    "node",
+    "wechat"
+  ],
+  "author": "qiansimin <qiansimin@shining3d.com> (qiansimin_shining3d.com)",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/qiansimin88/wechat/issues"
+  },
+  "homepage": "https://github.com/qiansimin88/wechat#readme",
+  "devDependencies": {
+    "koa": "^1.2.1",
+    "sha1": "^1.1.1"
+  }
+}
