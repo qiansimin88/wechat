@@ -19,7 +19,7 @@ app.use(function *(next) {
     let query = this.query 
 
     var token = config.wechat.token,
-        signature = query.signature,
+        signature = query.signature,  
         nonce = query.nonce,
         timestamp = query.timestamp,
         echostr = query.echostr
