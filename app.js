@@ -16,6 +16,24 @@ var app = new Koa()
 
 app.use(function *(next) {
     console.log(this.query)
+    let query = this.query 
+
+    var token = config.wechat.token,
+        signature = query.signature,
+        nonce = query.nonce,
+        timestamp = query.timestamp,
+        echostr = query.echostr
+
+    //字典排序
+    var str = [token, timestamp, nonce].sort().join('')
+    var sha = sha1(str)
+
+    if(sha === signature) {
+        //返回 字符串
+        this.body = echostr + ''
+    }else {
+        this.body = 'wrong'
+    }
 })
 
 app.listen(1234)
