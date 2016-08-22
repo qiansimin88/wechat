@@ -8,8 +8,11 @@ exports.readFileAsync = function (fpath, encoding) {
     //继续返回promise
     return new Promise((resolve, reject) => {
         fs.readFile(fpath, encoding, (err, data) => {
-            if (err) reject(err)
-            else resolve(data)
+            if (err) {
+                reject(err)
+            }else {
+                resolve(data)
+            }
         })
     })
 }
