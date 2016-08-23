@@ -5,18 +5,15 @@ var Promise = require('bluebird')
 
 var getRawBody = require('raw-body')
 
-// 让request具有promise属性
-var request = Promise.promisify(require('request'))
-
 var Access_tokenHandle = require('./access_token')
 var util = require('./util')
 
 // koa只支持es6的generator函数
-let joinWechat = function (opt) {
+let joinWechat = function (opt, handle) {
   // 实例化这个accesstoken的函数并且运行
   var access_tokenHandle = new Access_tokenHandle(opt)
   // 因为koa use的函数必须是个generator函数 所以这里必须要包装下 retun 一个generator函数才可以
-  return function * () {
+  return function * (next) {
     let query = this.query
     var token = opt.token,
       signature = query.signature,
@@ -50,25 +47,12 @@ let joinWechat = function (opt) {
       var content = yield util.parseXMLAsync(data)
       // 这里的content的value是一个数组，必须继续解析
       var message = util.formatMessage(content.xml)
-
       // 进行判断 并且回复
-      if (message.MsgType === 'event') {
-        // 如果是关注微信公众号的话
-        if (message.Event === 'subscribe') {
-          var now = Date.now()
-          this.status = 200
-          this.type = 'application/xml'
-          //返回给客户端的信息
-          this.body = `<xml>
-                            <ToUserName><![CDATA[${message.FromUserName}]]></ToUserName>
-                            <FromUserName><![CDATA[${message.ToUserName}]]></FromUserName>
-                            <CreateTime>${now}</CreateTime>
-                            <MsgType><![CDATA[text]]></MsgType>
-                            <Content><![CDATA[你好，我是钱思敏，你是谁啊]]></Content>
-                       </xml>`
-          return
-        }
-      }
+       //把信息挂到this上
+       this.weixin = message
+       yield handle.call(this, next)
+
+       access_tokenHandle.reply.call(this)
     }
   }
 }

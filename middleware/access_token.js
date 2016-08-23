@@ -3,6 +3,7 @@ var Promise = require('bluebird')
 //让request具有promise属性
 var request = Promise.promisify(require('request'))
 var prefix = 'https://api.weixin.qq.com/cgi-bin/token'
+var util = require('./util')
 var api = {
     accessToken : prefix + '?grant_type=client_credential&'
 }
@@ -32,8 +33,7 @@ function Access_tokenHandle (opts) {
 
             //如果验证通过
             if(this.isValidAccessToken(data)) {
-                // Promise.resolve(data)
-                return data
+             return  Promise.resolve(data)
             }else {
                 return this.updateAccessToken()
             }
@@ -82,6 +82,21 @@ Access_tokenHandle.prototype.updateAccessToken = function (){
             resolve(data)
         })
     })
+}
+
+//在generator里面改变上下文
+Access_tokenHandle.prototype.reply = function () {
+    //获得请求体
+    var content = this.body 
+    var message = this.weixin
+
+    //填充模板
+    var xml = util.tpl(content, message)
+    //返回
+    this.status = 200
+    this.body = xml
+    this.type = 'application/xml'
+
 }
 
 module.exports = Access_tokenHandle
